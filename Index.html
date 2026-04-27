@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="icon" href="images.png" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pumping Iron Benifaió | El Templo del Hierro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Teko:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- VARIABLES Y RESET --- */
+        :root {
+            --bg-color: #050505;
+            --text-color: #ffffff;
+            --accent-color: #f59e0b;
+            --accent-glow: rgba(245, 158, 11, 0.6);
+            --gray-dark: #111111;
+            --transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 { font-family: 'Teko', sans-serif; text-transform: uppercase; letter-spacing: 2px; }
+
+        /* --- ANIMACIONES DE REVELACIÓN --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: var(--transition);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- NAVEGACIÓN --- */
+        header {
+            background-color: rgba(0, 0, 0, 0.95);
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .header-title { font-family: 'Teko', sans-serif; font-size: 2rem; color: #fff; text-decoration: none; }
+        .header-title span { color: var(--accent-color); }
+
+        .nav-links { display: flex; align-items: center; }
+        .nav-links a {
+            color: #fff; text-decoration: none; font-weight: bold; margin-left: 20px;
+            text-transform: uppercase; font-size: 0.9rem; transition: 0.3s;
+        }
+        .nav-links a:hover { color: var(--accent-color); text-shadow: 0 0 10px var(--accent-color); }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&q=80&w=1470') center/cover fixed;
+            padding: 20px;
+        }
+
+        .hero-logo {
+            width: 100%;
+            max-width: 450px;
+            margin-bottom: 20px;
+            animation: pulse 3s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(255,255,255,0.2)); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 20px var(--accent-color)); }
+        }
+
+        .hero h1 { font-size: clamp(3rem, 8vw, 5.5rem); line-height: 0.9; margin-bottom: 20px; }
+
+        .btn {
+            background: var(--accent-color);
+            color: #000;
+            padding: 18px 40px;
+            font-size: 1.5rem;
+            font-family: 'Teko', sans-serif;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 0;
+            transition: var(--transition);
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: scale(1.1) skewX(-5deg);
+            background: #fff;
+            box-shadow: 0 0 40px var(--accent-color);
+        }
+
+        /* --- SECCIONES --- */
+        .section { padding: 100px 20px; max-width: 1200px; margin: 0 auto; text-align: center; }
+        .section-title { font-size: 4rem; margin-bottom: 50px; position: relative; }
+        .section-title::after {
+            content: ''; display: block; width: 80px; height: 5px; background: var(--accent-color);
+            margin: 10px auto;
+        }
+
+        /* --- CARDS DINÁMICAS (TEXTO POWER DESCENTRADO ORIGINAL) --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
+        .card {
+            background: var(--gray-dark);
+            padding: 40px;
+            border: 1px solid #222;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+            text-align: left; /* Queda mejor alineado a la izquierda si el power está a la derecha */
+        }
+        .card:hover { border-color: var(--accent-color); transform: translateY(-15px); }
+
+        .card::before {
+            content: 'POWER';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 4.5rem;
+            font-family: 'Teko', sans-serif;
+            color: rgba(255,255,255,0.03);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .card h3, .card p { position: relative; z-index: 1; }
+        .card h3 { color: var(--accent-color); font-size: 2.2rem; margin-bottom: 15px; }
+
+        /* --- INSTAGRAM REELS GRID --- */
+        .reels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            justify-items: center;
+        }
+        .reels-grid iframe {
+            width: 100%;
+            max-width: 320px;
+            height: 540px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            border: 1px solid #333;
+            transition: transform 0.3s;
+        }
+        .reels-grid iframe:hover {
+            transform: scale(1.02);
+            border-color: var(--accent-color);
+        }
+
+        /* --- MAPA --- */
+        .map-container {
+            width: 100%;
+            height: 450px;
+            margin-top: 50px;
+            border: 2px solid var(--accent-color);
+            filter: grayscale(1) invert(0.9) contrast(1.2);
+            transition: 0.5s;
+        }
+        .map-container:hover { filter: grayscale(0) invert(0); }
+
+        /* --- FOOTER / INFO --- */
+        footer { background: #000; padding: 80px 20px 40px; border-top: 1px solid var(--accent-color); }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 50px; text-align: left; }
+
+        .info-box h4 { color: var(--accent-color); font-size: 2rem; margin-bottom: 15px; }
+        .info-box p, .info-box li { color: #bbb; margin-bottom: 5px; }
+        .schedule li { display: flex; justify-content: space-between; border-bottom: 1px solid #222; padding: 5px 0; }
+        .highlight { color: #fff; font-weight: bold; }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .section-title { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="#" class="header-title">PUMPING <span>IRON</span></a>
+        <nav class="nav-links">
+            <a href="#entrenamiento">Entrenamiento</a>
+            <a href="#reels">Comunidad Z</a>
+            <a href="#horarios">Horarios</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <img src="images.png" alt="Logo Pumping Iron" class="hero-logo">
+        <h1 class="reveal">SUPERAR TUS LÍMITES <br> <span style="color:var(--accent-color)">NO ES OPCIONAL</span></h1>
+        <a href="https://wa.me/346421000265" class="btn reveal">RESERVAR MI SESIÓN</a>
+    </section>
+
+    <section id="entrenamiento" class="section">
+        <h2 class="section-title reveal">ZONA DE <span>GUERREROS</span></h2>
+        <div class="grid">
+            <div class="card reveal">
+                <h3>FUERZA BRUTA</h3>
+                <p>Zona de peso libre con mancuernas pesadas y racks de potencia para sentadillas y press de banca pesado.</p>
+            </div>
+            <div class="card reveal">
+                <h3>MAQUINARIA Z</h3>
+                <p>Equipamiento biomecánico seleccionado para un aislamiento muscular perfecto. Arnold estaría orgulloso.</p>
+            </div>
+            <div class="card reveal">
+                <h3>RECUPERACIÓN SENZU</h3>
+                <p>Asesoramiento personalizado en suplementación y nutrición para que tu Ki nunca baje.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="reels" class="section" style="background-color: #0a0a0a;">
+        <h2 class="section-title reveal">ACCIÓN EN <span>VIVO</span></h2>
+        <p class="reveal" style="margin-bottom: 40px; color: #aaa;">El hierro no miente. Así se entrena en el Templo del Poder.</p>
+
+        <div class="reels-grid">
+            <iframe class="reveal" src="https://www.instagram.com/p/DHvGLmIMH75/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
+
+            <iframe class="reveal" src="https://www.instagram.com/p/C_beBSnNc3M/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
+
+            <iframe class="reveal" src="https://www.instagram.com/p/DWikqsEDaLd/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
+        </div>
+
+        <div class="reveal" style="margin-top: 50px;">
+            <a href="https://www.instagram.com/pumping_iron_benifaio/" target="_blank" class="btn" style="padding: 10px 25px; font-size: 1.2rem;">VER MÁS EN @PUMPING_IRON_BENIFAIO</a>
+        </div>
+    </section>
+
+    <section id="ubicacion" class="section">
+        <h2 class="section-title reveal">NUESTRA <span>BASE</span></h2>
+        <p class="reveal">Avinguda Ausias March, 20, 46450 Benifaió, Valencia</p>
+        <div class="reveal">
+            <iframe class="map-container"
+                src="https://maps.google.com/maps?q=39.2814178,-0.4287406&hl=es&z=17&output=embed"
+                allowfullscreen="" loading="lazy"></iframe>
+        </div>
+    </section>
+
+    <footer id="horarios">
+        <div class="section" style="padding-top: 0;">
+            <div class="footer-grid">
+                <div class="info-box reveal">
+                    <h4>CONTACTO</h4>
+                    <p>📲 <strong>Teléfono:</strong> 642 10 02 65</p>
+                    <p>📸 <strong>Instagram:</strong> @pumping_iron_benifaio</p>
+                    <p>📍 Benifaió, Valencia</p>
+                    <br>
+                    <a href="https://www.instagram.com/pumping_iron_benifaio/" class="btn" style="font-size: 1rem; padding: 10px 20px; clip-path: none;" target="_blank">SÍGUENOS</a>
+                </div>
+
+                <div class="info-box reveal">
+                    <h4>HORARIOS</h4>
+                    <ul class="schedule">
+                        <li><span>Lunes - Jueves</span> <span class="highlight">06:00 - 22:00</span></li>
+                        <li><span>Viernes</span> <span class="highlight">06:00 - 14:00</span></li>
+                        <li><span>Sábado</span> <span class="highlight">06:00 - 20:00</span></li>
+                        <li><span>Domingo</span> <span class="highlight">06:00 - 14:00</span></li>
+                    </ul>
+                    <p style="font-size: 0.8rem; color: var(--accent-color); margin-top: 10px;">*Sujeto a cambios en festivos</p>
+                </div>
+            </div>
+        </div>
+        <p style="text-align: center; color: #444; font-size: 0.8rem; margin-top: 40px;">© 2026 Pumping Iron Benifaió | Hecho para Leyendas.</p>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', reveal);
+
+        function reveal() {
+            var reveals = document.querySelectorAll('.reveal');
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var revealTop = reveals[i].getBoundingClientRect().top;
+                var revealPoint = 100;
+
+                if (revealTop < windowHeight - revealPoint) {
+                    reveals[i].classList.add('active');
+                }
+            }
+        }
+        reveal();
+    </script>
+
+</body>
+</html>
