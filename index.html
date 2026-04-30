@@ -20,7 +20,7 @@
             --transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; cursor: none; /* Oculta el cursor por defecto para usar el nuestro */ }
 
         body {
             font-family: 'Montserrat', sans-serif;
@@ -31,17 +31,43 @@
 
         h1, h2, h3, h4 { font-family: 'Teko', sans-serif; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* --- ANIMACIONES DE REVELACIÓN --- */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: var(--transition);
+        /* --- BARRA DE PROGRESO DE SCROLL --- */
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: var(--accent-color);
+            z-index: 9999;
+            width: 0%;
+            box-shadow: 0 0 15px var(--accent-color);
+            transition: width 0.1s;
         }
 
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
+        /* --- CURSOR PERSONALIZADO --- */
+        .cursor, .cursor-trail {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
         }
+        .cursor {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-color);
+            box-shadow: 0 0 10px var(--accent-color);
+        }
+        .cursor-trail {
+            width: 30px;
+            height: 30px;
+            border: 2px solid rgba(245, 158, 11, 0.5);
+            transition: left 0.1s ease-out, top 0.1s ease-out, transform 0.2s;
+        }
+
+        /* --- ANIMACIONES DE REVELACIÓN --- */
+        .reveal { opacity: 0; transform: translateY(30px); transition: var(--transition); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
 
         /* --- NAVEGACIÓN --- */
         header {
@@ -67,7 +93,7 @@
         }
         .nav-links a:hover { color: var(--accent-color); text-shadow: 0 0 10px var(--accent-color); }
 
-        /* --- HERO SECTION --- */
+        /* --- HERO SECTION Y ORBES DE ENERGÍA --- */
         .hero {
             height: 100vh;
             display: flex;
@@ -77,6 +103,26 @@
             text-align: center;
             background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&q=80&w=1470') center/cover fixed;
             padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ki-orb {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--accent-color);
+            filter: blur(40px);
+            opacity: 0.15;
+            animation: float 6s infinite ease-in-out alternate;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .orb-1 { width: 250px; height: 250px; top: 15%; left: 5%; }
+        .orb-2 { width: 150px; height: 150px; bottom: 15%; right: 10%; animation-delay: -3s; }
+
+        @keyframes float {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-50px) scale(1.2); }
         }
 
         .hero-logo {
@@ -84,6 +130,8 @@
             max-width: 450px;
             margin-bottom: 20px;
             animation: pulse 3s infinite ease-in-out;
+            position: relative;
+            z-index: 1;
         }
 
         @keyframes pulse {
@@ -91,7 +139,7 @@
             50% { transform: scale(1.05); filter: drop-shadow(0 0 20px var(--accent-color)); }
         }
 
-        .hero h1 { font-size: clamp(3rem, 8vw, 5.5rem); line-height: 0.9; margin-bottom: 20px; }
+        .hero h1 { font-size: clamp(3rem, 8vw, 5.5rem); line-height: 0.9; margin-bottom: 20px; position: relative; z-index: 1; }
 
         .btn {
             background: var(--accent-color);
@@ -105,6 +153,8 @@
             transition: var(--transition);
             clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
             display: inline-block;
+            position: relative;
+            z-index: 1;
         }
 
         .btn:hover {
@@ -121,8 +171,9 @@
             margin: 10px auto;
         }
 
-        /* --- CARDS DINÁMICAS (TEXTO POWER DESCENTRADO ORIGINAL) --- */
+        /* --- CARDS DINÁMICAS (CON EFECTO SHINE) --- */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
+
         .card {
             background: var(--gray-dark);
             padding: 40px;
@@ -130,15 +181,28 @@
             position: relative;
             overflow: hidden;
             transition: var(--transition);
-            text-align: left; /* Queda mejor alineado a la izquierda si el power está a la derecha */
+            text-align: left;
         }
-        .card:hover { border-color: var(--accent-color); transform: translateY(-15px); }
+
+        .card:hover { border-color: var(--accent-color); transform: translateY(-15px) scale(1.02); box-shadow: 0 15px 30px rgba(0,0,0,0.8); }
+
+        /* Efecto destello al hacer hover */
+        .card::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(245, 158, 11, 0.1) 50%, rgba(255,255,255,0) 100%);
+            transform: rotate(30deg) translateY(-100%);
+            transition: 0.8s;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .card:hover::after { transform: rotate(30deg) translateY(100%); }
 
         .card::before {
             content: 'POWER';
             position: absolute;
-            top: -10px;
-            right: -10px;
+            top: -10px; right: -10px;
             font-size: 4.5rem;
             font-family: 'Teko', sans-serif;
             color: rgba(255,255,255,0.03);
@@ -146,7 +210,7 @@
             pointer-events: none;
         }
 
-        .card h3, .card p { position: relative; z-index: 1; }
+        .card h3, .card p { position: relative; z-index: 2; }
         .card h3 { color: var(--accent-color); font-size: 2.2rem; margin-bottom: 15px; }
 
         /* --- INSTAGRAM REELS GRID --- */
@@ -164,11 +228,12 @@
             border-radius: 10px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.5);
             border: 1px solid #333;
-            transition: transform 0.3s;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .reels-grid iframe:hover {
-            transform: scale(1.02);
+            transform: scale(1.05) translateY(-10px);
             border-color: var(--accent-color);
+            box-shadow: 0 15px 30px var(--accent-glow);
         }
 
         /* --- MAPA --- */
@@ -178,9 +243,9 @@
             margin-top: 50px;
             border: 2px solid var(--accent-color);
             filter: grayscale(1) invert(0.9) contrast(1.2);
-            transition: 0.5s;
+            transition: filter 0.5s, box-shadow 0.5s;
         }
-        .map-container:hover { filter: grayscale(0) invert(0); }
+        .map-container:hover { filter: grayscale(0) invert(0); box-shadow: 0 0 20px var(--accent-glow); }
 
         /* --- FOOTER / INFO --- */
         footer { background: #000; padding: 80px 20px 40px; border-top: 1px solid var(--accent-color); }
@@ -194,10 +259,17 @@
         @media (max-width: 768px) {
             .nav-links { display: none; }
             .section-title { font-size: 2.5rem; }
+            * { cursor: auto; } /* Desactiva cursor custom en móvil */
+            .cursor, .cursor-trail { display: none; }
         }
     </style>
 </head>
 <body>
+
+    <!-- ELEMENTOS DINÁMICOS -->
+    <div id="progress-bar"></div>
+    <div class="cursor"></div>
+    <div class="cursor-trail"></div>
 
     <header>
         <a href="#" class="header-title">PUMPING <span>IRON</span></a>
@@ -209,6 +281,8 @@
     </header>
 
     <section class="hero">
+        <div class="ki-orb orb-1"></div>
+        <div class="ki-orb orb-2"></div>
         <img src="images.png" alt="Logo Pumping Iron" class="hero-logo">
         <h1 class="reveal">SUPERAR TUS LÍMITES <br> <span style="color:var(--accent-color)">NO ES OPCIONAL</span></h1>
         <a href="https://wa.me/346421000265" class="btn reveal">RESERVAR MI SESIÓN</a>
@@ -238,9 +312,7 @@
 
         <div class="reels-grid">
             <iframe class="reveal" src="https://www.instagram.com/p/DHvGLmIMH75/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
-
             <iframe class="reveal" src="https://www.instagram.com/p/C_beBSnNc3M/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
-
             <iframe class="reveal" src="https://www.instagram.com/p/DWikqsEDaLd/embed" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
         </div>
 
@@ -287,6 +359,7 @@
     </footer>
 
     <script>
+        // --- ANIMACIONES AL HACER SCROLL ---
         window.addEventListener('scroll', reveal);
 
         function reveal() {
@@ -301,7 +374,44 @@
                 }
             }
         }
-        reveal();
+        reveal(); // Activar al cargar la página
+
+        // --- BARRA DE PROGRESO DE LECTURA ---
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progress-bar').style.width = scrolled + '%';
+        });
+
+        // --- CURSOR PERSONALIZADO ---
+        const cursor = document.querySelector('.cursor');
+        const trail = document.querySelector('.cursor-trail');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+
+            // Retraso para la estela
+            setTimeout(() => {
+                trail.style.left = e.clientX + 'px';
+                trail.style.top = e.clientY + 'px';
+            }, 50);
+        });
+
+        // Agrandar cursor al pasar por enlaces y botones
+        document.querySelectorAll('a, .btn, iframe').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                trail.style.transform = 'translate(-50%, -50%) scale(2)';
+                trail.style.borderColor = '#ffffff';
+                trail.style.borderWidth = '1px';
+            });
+            el.addEventListener('mouseleave', () => {
+                trail.style.transform = 'translate(-50%, -50%) scale(1)';
+                trail.style.borderColor = 'rgba(245, 158, 11, 0.5)';
+                trail.style.borderWidth = '2px';
+            });
+        });
     </script>
 
 </body>
